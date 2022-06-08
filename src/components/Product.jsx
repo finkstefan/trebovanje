@@ -8,6 +8,7 @@ function Products(){
     const [products, setProducts] = useState([]);
     const [orderItems,setOrderItems]= useState([]);
     const [itemsCounted,setItemsCounted]= useState([]);
+   const [isAdmin,setIsAdmin]= useState(true);
 
     var randomString = require("random-string");
 
@@ -113,6 +114,8 @@ console.log(JSON.stringify(item));
            <TableCell>Cena</TableCell>
            <TableCell>Dostupan</TableCell>
           
+
+          {isAdmin? <Button variant="contained">Novi proizvod</Button> : null}
            </TableHead>
            <TableBody>
                {products?.map((product)=>(
@@ -120,7 +123,9 @@ console.log(JSON.stringify(item));
                        <TableCell>{product.kategorijaNaziv}</TableCell>
                        <TableCell>{product.cena}</TableCell>
                        <TableCell>{product.dostupan? 'Da' : 'Ne'}</TableCell>
-                      <TableCell> <Button variant="contained" onClick={() => {addOrderItem(product.proizvodId)}}>Dodaj</Button></TableCell>
+                      <TableCell> {isAdmin? null:<Button variant="contained" onClick={() => {addOrderItem(product.proizvodId)}}>Dodaj</Button>}
+                     {isAdmin? <Button variant="contained">Obrisi</Button>:null}
+                     {isAdmin? <Button variant="contained">Izmeni</Button>:null}</TableCell>
                       
                    </TableRow>
                ))}
@@ -129,7 +134,7 @@ console.log(JSON.stringify(item));
        </Table>
         </TableContainer>
         <br/>
-        <Button variant="contained" onClick={() => {addOrder()}}>Potvrdi porudzbinu</Button>
+      {isAdmin?null:<Button variant="contained" onClick={() => {addOrder()}}>Potvrdi porudzbinu</Button>}  
             
             
         </div>)
