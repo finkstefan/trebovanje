@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button} from "@mui/material"
+import ProductDialog from './ProductDialog';
 
 
 function Products(){
@@ -11,11 +12,25 @@ function Products(){
    const [isAdmin,setIsAdmin]= useState(true);
 
     var randomString = require("random-string");
+    const [open, setOpen] = React.useState(false);
+
+
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+
 
     
     useEffect(() => {
         getProducts();
     },[]);
+
+   
+   
 
 
     
@@ -115,7 +130,11 @@ console.log(JSON.stringify(item));
            <TableCell>Dostupan</TableCell>
           
 
-          {isAdmin? <Button variant="contained">Novi proizvod</Button> : null}
+          {/*isAdmin? <Button variant="contained" onClick={handleClickOpen}>Novi proizvod</Button> : null*/}
+          <ProductDialog
+      open={open}
+      onClose={handleClose}
+      />
            </TableHead>
            <TableBody>
                {products?.map((product)=>(
@@ -133,6 +152,7 @@ console.log(JSON.stringify(item));
            
        </Table>
         </TableContainer>
+     
         <br/>
       {isAdmin?null:<Button variant="contained" onClick={() => {addOrder()}}>Potvrdi porudzbinu</Button>}  
             
