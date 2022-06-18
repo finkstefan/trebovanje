@@ -75,7 +75,7 @@ export default function ProductDialog() {
       headers: { 'Content-Type': 'application/json' },
      // body: JSON.stringify(item)
   };
-
+  }
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
@@ -125,4 +125,3 @@ export default function ProductDialog() {
     </div>
   );
   }
-}
