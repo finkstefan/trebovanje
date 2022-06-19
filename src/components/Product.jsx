@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button} from "@mui/material"
 import ProductDialog from './ProductDialog';
+import AlertDialog from './AlertDialog';
 
 
 function Products(){
@@ -135,6 +136,7 @@ console.log(JSON.stringify(item));
       open={open}
       onClose={handleClose}
       />
+       
            </TableHead>
            <TableBody>
                {products?.map((product)=>(
@@ -143,7 +145,11 @@ console.log(JSON.stringify(item));
                        <TableCell>{product.cena}</TableCell>
                        <TableCell>{product.dostupan? 'Da' : 'Ne'}</TableCell>
                       <TableCell> {isAdmin? null:<Button variant="contained" onClick={() => {addOrderItem(product.proizvodId)}}>Dodaj</Button>}
-                     {isAdmin? <Button variant="contained">Obrisi</Button>:null}
+                     {isAdmin?  <AlertDialog
+      open={open}
+      onClose={handleClose}
+      value = {product.proizvodId}
+      />:null}
                      {isAdmin? <Button variant="contained">Izmeni</Button>:null}</TableCell>
                       
                    </TableRow>
