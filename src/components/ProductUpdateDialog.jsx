@@ -109,7 +109,7 @@ export default function ProductUpdateDialog({cenaPr,idPr,nazivPr, dostupnost}) {
           />
           Dostupan:
            <Checkbox
-           
+           color="default"
   available={available}
   onChange={handleAvailableChange}
   inputProps={{ 'aria-label': 'controlled' }}
