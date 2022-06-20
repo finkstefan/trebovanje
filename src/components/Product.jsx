@@ -3,6 +3,7 @@ import axios from 'axios'
 import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button} from "@mui/material"
 import ProductDialog from './ProductDialog';
 import AlertDialog from './AlertDialog';
+import ProductUpdateDialog from './ProductUpdateDialog';
 
 
 function Products(){
@@ -11,6 +12,7 @@ function Products(){
     const [orderItems,setOrderItems]= useState([]);
     const [itemsCounted,setItemsCounted]= useState([]);
    const [isAdmin,setIsAdmin]= useState(true);
+ 
 
     var randomString = require("random-string");
     const [open, setOpen] = React.useState(false);
@@ -31,7 +33,7 @@ function Products(){
     },[]);
 
    
-   
+
 
 
     
@@ -150,7 +152,16 @@ console.log(JSON.stringify(item));
       onClose={handleClose}
       value = {product.proizvodId}
       />:null}
-                     {isAdmin? <Button variant="contained">Izmeni</Button>:null}</TableCell>
+                     {isAdmin? <ProductUpdateDialog
+      open={open}
+      onClose={handleClose}
+      cenaPr = {product.cena}
+      idPr={product.proizvodId}
+      nazivPr={product.naziv}
+      dostupnost={product.dostupan}
+      />:null}
+
+      </TableCell>
                       
                    </TableRow>
                ))}
