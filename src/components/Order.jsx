@@ -19,6 +19,7 @@ function Orders(){
     const [open, setOpen] = React.useState(false);
 
 
+
     const handleClickOpen = () => {
       setOpen(true);
     };
@@ -76,6 +77,7 @@ function Orders(){
            <TableHead>
            <TableCell>Datum</TableCell>
            <TableCell>Distributer</TableCell>
+           <TableCell>Iznos</TableCell>
            <TableCell>Isplacena</TableCell>
           
 
@@ -88,8 +90,9 @@ function Orders(){
                    <TableRow key={order.porudzbinaId}>
                        <TableCell>{order.datum}</TableCell>
                        <TableCell>{order.distributerId}</TableCell>
+                       <TableCell>{order.iznos}</TableCell>
                        <TableCell>{order.isplacena? 'Da' : 'Ne'}</TableCell>
-                     
+                    
                        <Button variant="contained" onClick={() => loadOrderItems(order.porudzbinaId)}>Prikazi stavke</Button>
                    </TableRow>
                ))}
@@ -119,6 +122,7 @@ function Orders(){
                        <TableCell>{orderItem.proizvodId}</TableCell>
                        <TableCell>{orderItem.porudzbinaId}</TableCell>
                        <TableCell>{orderItem.kolicina}</TableCell>
+
                      
                    </TableRow>
                ))}
