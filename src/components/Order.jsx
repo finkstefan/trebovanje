@@ -4,6 +4,7 @@ import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button
 import ProductDialog from './ProductDialog';
 import AlertDialog from './AlertDialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
+import StripeCheckout from 'react-stripe-checkout'
 
 
 function Orders(){
@@ -69,6 +70,10 @@ function Orders(){
        
     };
 
+    function handleToken(token,addresses){
+
+    }
+
 
     return (<div>
         <h2>Porudzbine</h2>
@@ -92,8 +97,8 @@ function Orders(){
                        <TableCell>{order.distributerId}</TableCell>
                        <TableCell>{order.iznos}</TableCell>
                        <TableCell>{order.isplacena? 'Da' : 'Ne'}</TableCell>
-                    
                        <Button variant="contained" onClick={() => loadOrderItems(order.porudzbinaId)}>Prikazi stavke</Button>
+                  {order.isplacena? null:<StripeCheckout stripeKey="" token={handleToken} amount="order.iznos" name="Uplata za porudzbinu:"/> }   
                    </TableRow>
                ))}
            </TableBody>
@@ -101,7 +106,9 @@ function Orders(){
        </Table>
         </TableContainer>
 
-        <h3>Stavke</h3>
+       
+
+        <h3>Stavke izabrane porudzbine</h3>
         {orderItems==undefined  ? null:
    <TableContainer component="Paper">
        <Table aria-label='tbl'>
