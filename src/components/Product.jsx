@@ -131,7 +131,7 @@ console.log(JSON.stringify(item));
            <TableCell>Proizvod</TableCell>
            <TableCell>Cena</TableCell>
            <TableCell>Dostupan</TableCell>
-          
+           <TableCell>Dostupna kolicina</TableCell>
 
           {/*isAdmin? <Button variant="contained" onClick={handleClickOpen}>Novi proizvod</Button> : null*/}
           <ProductDialog
@@ -146,6 +146,7 @@ console.log(JSON.stringify(item));
                        <TableCell>{product.kategorijaNaziv}</TableCell>
                        <TableCell>{product.cena}</TableCell>
                        <TableCell>{product.dostupan? 'Da' : 'Ne'}</TableCell>
+                       <TableCell>{product.dostupnaKolicina}</TableCell>
                       <TableCell> {isAdmin? null:<Button variant="contained" onClick={() => {addOrderItem(product.proizvodId)}}>Dodaj</Button>}
                      {isAdmin?  <AlertDialog
       open={open}

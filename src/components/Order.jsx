@@ -71,7 +71,7 @@ function Orders(){
     };
 
     function handleToken(token,addresses){
-
+console.log(token);
     }
 
 
@@ -86,7 +86,8 @@ function Orders(){
            <TableCell>Isplacena</TableCell>
           
 
-          {/*isAdmin? <Button variant="contained" onClick={handleClickOpen}>Novi proizvod</Button> : null*/}
+          {/*isAdmin? <Button variant="con
+          tained" onClick={handleClickOpen}>Novi proizvod</Button> : null*/}
         
        
            </TableHead>
@@ -98,7 +99,7 @@ function Orders(){
                        <TableCell>{order.iznos}</TableCell>
                        <TableCell>{order.isplacena? 'Da' : 'Ne'}</TableCell>
                        <Button variant="contained" onClick={() => loadOrderItems(order.porudzbinaId)}>Prikazi stavke</Button>
-                  {order.isplacena? null:<StripeCheckout stripeKey="" token={handleToken} amount="order.iznos" name="Uplata za porudzbinu:"/> }   
+                  {order.isplacena? null:<StripeCheckout stripeKey="pk_test_51LEHoBFYog7W2g6eQwYMObxVNQEGmkFic6yIPG5mF0nVida85a1Rd24lumFnPJ3PqEm4BV0Y8CY8V7f6xTPmU5or00B8as1mhg" token={handleToken} amount="order.iznos" name="Uplata za porudzbinu:"/> }   
                    </TableRow>
                ))}
            </TableBody>
