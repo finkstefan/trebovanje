@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthService from "../services/auth.service";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -28,14 +30,27 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignIn() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await AuthService.login(username, password).then(
+        () => {
+          navigate("/");
+          window.location.reload();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -56,15 +71,17 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Prijava
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email adresa"
-              name="email"
-              autoComplete="email"
+              id="username"
+              label="Korisnicko ime"
+              name="username"
+              value={username}
+          onChange={(e) => setUsername(e.target.value)}
+              autoComplete="username"
               autoFocus
             />
             <TextField
@@ -75,6 +92,8 @@ export default function SignIn() {
               label="Lozinka"
               type="password"
               id="password"
+              value={password}
+          onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
             />
             <FormControlLabel
@@ -97,3 +116,5 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
+
+export default Login;
