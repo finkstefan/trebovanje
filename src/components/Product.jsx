@@ -4,7 +4,7 @@ import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button
 import ProductDialog from './ProductDialog';
 import AlertDialog from './AlertDialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
-
+import authHeader from '../services/auth-header';
 
 function Products(){
 
@@ -13,6 +13,7 @@ function Products(){
     const [itemsCounted,setItemsCounted]= useState([]);
    const [isAdmin,setIsAdmin]= useState(true);
  
+   const token = JSON.parse(localStorage.getItem("token"));
 
     var randomString = require("random-string");
     const [open, setOpen] = React.useState(false);
@@ -38,7 +39,7 @@ function Products(){
 
     
     const getProducts = async () => {
-        const result = await axios.get(`http://localhost:4250/api/proizvod`);
+        const result = await axios.get(`http://localhost:4250/api/proizvod`, { headers: {'Authorization': `Bearer ${token}` }});
         const data = await result.data;
        
       // console.log(data)
@@ -95,7 +96,7 @@ function Products(){
 
         const requestOptions = {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${token}`  },
           body: JSON.stringify(item)
       };
 
@@ -111,7 +112,7 @@ console.log(JSON.stringify(item));
 
         const requestOptions = {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${token}` },
           body: JSON.stringify(order)
         }
 

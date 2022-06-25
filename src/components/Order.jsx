@@ -15,6 +15,7 @@ function Orders(){
     const [itemsCounted,setItemsCounted]= useState([]);
    const [isAdmin,setIsAdmin]= useState(true);
  
+   const token = JSON.parse(localStorage.getItem("token"));
 
     var randomString = require("random-string");
     const [open, setOpen] = React.useState(false);
@@ -48,7 +49,7 @@ function Orders(){
 
     
     const getOrders = async () => {
-        const result = await axios.get(`http://localhost:4250/api/porudzbina`);
+        const result = await axios.get(`http://localhost:4250/api/porudzbina`, { headers: {'Authorization': `Bearer ${token}` }});
         const data = await result.data;
        
       // console.log(data)
@@ -58,7 +59,7 @@ function Orders(){
 
     
     const getOrderItems = async () => {
-        const result = await axios.get(`http://localhost:4250/api/stavkaPorudzbine/stavkeByPorudzbinaId/${orderId}`);
+        const result = await axios.get(`http://localhost:4250/api/stavkaPorudzbine/stavkeByPorudzbinaId/${orderId}`, { headers: {'Authorization': `Bearer ${token}` }});
         const data = await result.data;
         setOrderItems(Array.from(data))
 

@@ -69,7 +69,7 @@ const Login = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Prijava
+            ProCure - Prijava
           </Typography>
           <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
             <TextField
