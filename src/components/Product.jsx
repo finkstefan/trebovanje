@@ -5,6 +5,8 @@ import ProductDialog from './ProductDialog';
 import AlertDialog from './AlertDialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
 import authHeader from '../services/auth-header';
+import AuthService from "../services/auth.service";
+import { useNavigate } from "react-router-dom";
 
 function Products(){
 
@@ -16,6 +18,8 @@ function Products(){
    const token = JSON.parse(localStorage.getItem("token"));
 
     var randomString = require("random-string");
+    const navigate = useNavigate();
+
     const [open, setOpen] = React.useState(false);
 
 
@@ -39,7 +43,14 @@ function Products(){
 
     
     const getProducts = async () => {
-        const result = await axios.get(`http://localhost:4250/api/proizvod`, { headers: {'Authorization': `Bearer ${token}` }});
+        const result = await axios.get(`http://localhost:4250/api/proizvod`, { headers: {'Authorization': `Bearer ${token}` }})
+        .catch(function (error) {
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
+        });
         const data = await result.data;
        
       // console.log(data)
@@ -103,7 +114,13 @@ function Products(){
 console.log(JSON.stringify(item));
 
       fetch('http://localhost:4250/api/stavkaPorudzbine', requestOptions)
-          .then(response => console.log(response))
+          .then(response => console.log(response)).catch(function (error) {
+            if (error.response && error.response.status === 403) {
+              AuthService.logout();
+              navigate("/login");
+              window.location.reload();
+            }
+          });
       }
 
        function postOrder(id) {
@@ -119,7 +136,13 @@ console.log(JSON.stringify(item));
         console.log(JSON.stringify(order))
         
       fetch('http://localhost:4250/api/porudzbina', requestOptions)
-      .then(response => console.log(response))
+      .then(response => console.log(response)).catch(function (error) {
+        if (error.response && error.response.status === 403) {
+          AuthService.logout();
+          navigate("/login");
+          window.location.reload();
+        }
+      });
       };
 
       

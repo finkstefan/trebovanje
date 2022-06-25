@@ -7,6 +7,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect, useState, useRef } from "react";
+import AuthService from "../services/auth.service";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductDialog() {
   const [open, setOpen] = React.useState(false);

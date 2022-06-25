@@ -5,6 +5,8 @@ import ProductDialog from './ProductDialog';
 import AlertDialog from './AlertDialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
 import StripeCheckout from 'react-stripe-checkout'
+import AuthService from "../services/auth.service";
+import { useNavigate } from "react-router-dom";
 
 
 function Orders(){
@@ -18,6 +20,8 @@ function Orders(){
    const token = JSON.parse(localStorage.getItem("token"));
 
     var randomString = require("random-string");
+    const navigate = useNavigate();
+
     const [open, setOpen] = React.useState(false);
 
 
@@ -49,7 +53,13 @@ function Orders(){
 
     
     const getOrders = async () => {
-        const result = await axios.get(`http://localhost:4250/api/porudzbina`, { headers: {'Authorization': `Bearer ${token}` }});
+        const result = await axios.get(`http://localhost:4250/api/porudzbina`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+            if (error.response && error.response.status === 403) {
+              AuthService.logout();
+              navigate("/login");
+              window.location.reload();
+            }
+          });;
         const data = await result.data;
        
       // console.log(data)
@@ -59,7 +69,13 @@ function Orders(){
 
     
     const getOrderItems = async () => {
-        const result = await axios.get(`http://localhost:4250/api/stavkaPorudzbine/stavkeByPorudzbinaId/${orderId}`, { headers: {'Authorization': `Bearer ${token}` }});
+        const result = await axios.get(`http://localhost:4250/api/stavkaPorudzbine/stavkeByPorudzbinaId/${orderId}`, { headers: {'Authorization': `Bearer ${token}` }}) .catch(function (error) {
+            if (error.response && error.response.status === 403) {
+              AuthService.logout();
+              navigate("/login");
+              window.location.reload();
+            }
+          });
         const data = await result.data;
         setOrderItems(Array.from(data))
 
