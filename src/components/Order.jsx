@@ -69,7 +69,7 @@ function Orders(){
 
     
     const getOrderItems = async () => {
-        const result = await axios.get(`http://localhost:4250/api/stavkaPorudzbine/stavkeByPorudzbinaId/${orderId}`, { headers: {'Authorization': `Bearer ${token}` }}) .catch(function (error) {
+        const result = await axios.get(`http://localhost:4250/api/stavkaPorudzbine/stavkeByPorudzbinaId/${orderId}`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
             if (error.response && error.response.status === 403) {
               AuthService.logout();
               navigate("/login");

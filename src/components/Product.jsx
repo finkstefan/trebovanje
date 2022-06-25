@@ -31,6 +31,10 @@ function Products(){
       setOpen(false);
     };
 
+    const handleLogOut = () => {
+      logOut();
+    };
+
 
     
     useEffect(() => {
@@ -146,8 +150,16 @@ console.log(JSON.stringify(item));
       };
 
       
+  function logOut(){
+    AuthService.logout();
+    navigate("/login");
+    window.location.reload();
+      }
+      
 
     return (<div>
+      
+      { localStorage.token != null? <Button variant="outlined" onClick={handleLogOut}>Odjava</Button>:null}
         <h2>Proizvodi</h2>
         <TableContainer component="Paper">
        <Table aria-label='tbl'>

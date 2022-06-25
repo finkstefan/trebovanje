@@ -20,17 +20,17 @@ const login = (username, password) => {
 };
 
 const logout = () => {
-  localStorage.removeItem("user");
+  localStorage.removeItem("token");
 };
 
-const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem("user"));
+const getCurrentUserToken = () => {
+  return JSON.parse(localStorage.getItem("token"));
 };
 
 const authService = {
   login,
   logout,
-  getCurrentUser,
+  getCurrentUserToken,
 };
 
 export default authService;
