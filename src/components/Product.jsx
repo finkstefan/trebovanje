@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button} from "@mui/material"
+import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button,TextField} from "@mui/material"
 import ProductDialog from './ProductDialog';
 import AlertDialog from './AlertDialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
@@ -161,6 +161,7 @@ console.log(JSON.stringify(item));
       
       { localStorage.token != null? <Button variant="outlined" onClick={handleLogOut}>Odjava</Button>:null}
         <h2>Proizvodi</h2>
+        <TextField id="standard-basic" label="Pretraga" variant="standard" />
         <TableContainer component="Paper">
        <Table aria-label='tbl'>
            <TableHead>

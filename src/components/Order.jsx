@@ -34,6 +34,24 @@ function Orders(){
       setOpen(false);
     };
 
+    const handlePayment = () => {
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${token}` },
+       
+      }
+
+      
+    fetch('http://localhost:4250/api/porudzbina/stripePayment', requestOptions)
+    .then(response => console.log(response)).catch(function (error) {
+      if (error.response && error.response.status === 403) {
+        AuthService.logout();
+        navigate("/login");
+        window.location.reload();
+      }
+    });
+    };
+
     function loadOrderItems(id) {
     setOrderId(id);
   //  console.log(id)
@@ -87,8 +105,24 @@ function Orders(){
        
     };
 
-    function handleToken(token,addresses){
-console.log(token);
+  async function handleToken(token,amount){
+
+const requestOptions = {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(amount)
+}
+
+console.log(requestOptions.body)
+
+fetch('http://localhost:4250/api/porudzbina/stripePayment', requestOptions)
+.then(response => console.log(response)).catch(function (error) {
+if (error.response && error.response.status === 403) {
+  AuthService.logout();
+  navigate("/login");
+  window.location.reload();
+}
+});
     }
 
 
@@ -116,7 +150,10 @@ console.log(token);
                        <TableCell>{order.iznos}</TableCell>
                        <TableCell>{order.isplacena? 'Da' : 'Ne'}</TableCell>
                        <Button variant="contained" onClick={() => loadOrderItems(order.porudzbinaId)}>Prikazi stavke</Button>
-                  {order.isplacena? null:<StripeCheckout stripeKey="pk_test_51LEHoBFYog7W2g6eQwYMObxVNQEGmkFic6yIPG5mF0nVida85a1Rd24lumFnPJ3PqEm4BV0Y8CY8V7f6xTPmU5or00B8as1mhg" token={handleToken} amount="order.iznos" name="Uplata za porudzbinu:"/> }   
+                  {order.isplacena? null:<StripeCheckout stripeKey="pk_test_51LEHoBFYog7W2g6eQwYMObxVNQEGmkFic6yIPG5mF0nVida85a1Rd24lumFnPJ3PqEm4BV0Y8CY8V7f6xTPmU5or00B8as1mhg" token={(token) => {     
+     handleToken(token, order.iznos);
+   }} amount={order.iznos * 100} /> }  
+              
                    </TableRow>
                ))}
            </TableBody>
