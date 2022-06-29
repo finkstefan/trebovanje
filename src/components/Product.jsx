@@ -35,7 +35,6 @@ function Products(){
       logOut();
     };
 
-
     
     useEffect(() => {
         getProducts();
@@ -155,13 +154,29 @@ console.log(JSON.stringify(item));
     navigate("/login");
     window.location.reload();
       }
-      
+
+      const [q, setQ] = useState("");
+
+      const search= async () =>{
+        const result = await axios.get(`http://localhost:4250/api/proizvod/byNaziv/`+q, { headers: {'Authorization': `Bearer ${token}` }})
+        .catch(function (error) {
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
+        });
+        const data = await result.data;
+       
+      // console.log(data)
+        setProducts(data)
+      }
 
     return (<div>
       
-      { localStorage.token != null? <Button variant="outlined" onClick={handleLogOut}>Odjava</Button>:null}
+      { localStorage.token != null? <Button variant="outlined" onClick={() => search()}>Odjava</Button>:null}
         <h2>Proizvodi</h2>
-        <TextField id="standard-basic" label="Pretraga" variant="standard" />
+        <TextField id="standard-basic" label="Naziv" variant="standard" onChange={(e) => setQ(e.target.value)}/><Button variant="outlined"  onClick={search}>Pretrazi</Button>
         <TableContainer component="Paper">
        <Table aria-label='tbl'>
            <TableHead>
@@ -180,7 +195,7 @@ console.log(JSON.stringify(item));
            <TableBody>
                {products?.map((product)=>(
                    <TableRow key={product.proizvodId}>
-                       <TableCell>{product.kategorijaNaziv}</TableCell>
+                       <TableCell>{product.naziv}</TableCell>
                        <TableCell>{product.cena}</TableCell>
                        <TableCell>{product.dostupan? 'Da' : 'Ne'}</TableCell>
                        <TableCell>{product.dostupnaKolicina}</TableCell>
