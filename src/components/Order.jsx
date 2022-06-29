@@ -146,7 +146,7 @@ if (error.response && error.response.status === 403) {
                {orders?.map((order)=>(
                    <TableRow key={order.porudzbinaId}>
                        <TableCell>{order.datum}</TableCell>
-                       <TableCell>{order.distributerId}</TableCell>
+                       <TableCell>{order.distributer.nazivDistributera}</TableCell>
                        <TableCell>{order.iznos}</TableCell>
                        <TableCell>{order.isplacena? 'Da' : 'Ne'}</TableCell>
                        <Button variant="contained" onClick={() => loadOrderItems(order.porudzbinaId)}>Prikazi stavke</Button>
@@ -168,7 +168,7 @@ if (error.response && error.response.status === 403) {
    <TableContainer component="Paper">
        <Table aria-label='tbl'>
            <TableHead>
-           <TableCell>ProizvodId</TableCell>
+           <TableCell>Proizvod</TableCell>
            <TableCell>PorudzbinaId</TableCell>
            <TableCell>Kolicina</TableCell>
           
@@ -181,7 +181,7 @@ if (error.response && error.response.status === 403) {
                {
                orderItems?.map((orderItem)=>(
                    <TableRow key={orderItem.stavkaPorudzbineId}>
-                       <TableCell>{orderItem.proizvodId}</TableCell>
+                       <TableCell>{orderItem.proizvod.naziv}</TableCell>
                        <TableCell>{orderItem.porudzbinaId}</TableCell>
                        <TableCell>{orderItem.kolicina}</TableCell>
 
