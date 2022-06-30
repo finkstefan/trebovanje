@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button,TextField} from "@mui/material"
+import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button,TextField,Menu,MenuItem} from "@mui/material"
 import ProductDialog from './ProductDialog';
 import AlertDialog from './AlertDialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 function Products(){
 
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("");
     const [orderItems,setOrderItems]= useState([]);
     const [itemsCounted,setItemsCounted]= useState([]);
    const [isAdmin,setIsAdmin]= useState(true);
@@ -41,7 +43,23 @@ function Products(){
     },[]);
 
    
-
+    const productsByCategory = async (category) => {
+      setSelectedCategory(category);
+      console.log(selectedCategory)
+      const result = await axios.get(`http://localhost:4250/api/proizvod/byKategorija/`+selectedCategory, { headers: {'Authorization': `Bearer ${token}` }})
+      .catch(function (error) {
+        if (error.response && error.response.status === 403) {
+          AuthService.logout();
+          navigate("/login");
+          window.location.reload();
+        }
+      });
+      const data = await result.data;
+     
+    // console.log(data)
+      setProducts(data)
+     
+  };
 
 
     
@@ -172,14 +190,62 @@ console.log(JSON.stringify(item));
         setProducts(data)
       }
 
+      const [menuOpen, setMenuOpen] = React.useState(false);
+      const [anchorEl, setAnchorEl] = React.useState()
+    
+      const recordButtonPosition = (event) => {
+          setAnchorEl(event.currentTarget);
+          setMenuOpen(true);
+         
+      }
+    
+      let closeMenu = () => {
+          setMenuOpen(false);
+      }
+
+      useEffect(() => {
+       
+      const getCategories = async () => {
+        const result = await axios.get(`http://localhost:4250/api/kategorija`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+            if (error.response && error.response.status === 403) {
+              AuthService.logout();
+              navigate("/login");
+              window.location.reload();
+            }
+          });
+        const data = await result.data;
+       
+        setCategories(data)
+       
+        
+    };
+        getCategories();
+       
+      }, []);
+
+
     return (<div>
       
       { localStorage.token != null? <Button variant="outlined" onClick={() => search()}>Odjava</Button>:null}
         <h2>Proizvodi</h2>
         <TextField id="standard-basic" label="Naziv" variant="standard" onChange={(e) => setQ(e.target.value)}/><Button variant="outlined"  onClick={search}>Pretrazi</Button>
+        <React.Fragment>
+          <Button onClick={recordButtonPosition}>
+              Kategorija
+          </Button>
+          <Menu
+              anchorEl={anchorEl}
+              open={menuOpen}
+              onClose={closeMenu}>
+        
+               {categories.map((category) => (
+          <MenuItem key={category.kategorijaId} value={category.kategorijaId} onClick={(ev) => productsByCategory(ev.target.value)}>{category.nazivKategorije}</MenuItem>
+        ))}
+          </Menu>
+      </React.Fragment>
         <TableContainer component="Paper">
        <Table aria-label='tbl'>
-           <TableHead>
+           <TableHead >
            <TableCell>Proizvod</TableCell>
            <TableCell>Cena</TableCell>
            <TableCell>Dostupan</TableCell>
