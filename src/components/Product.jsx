@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button,TextField,Menu,MenuItem} from "@mui/material"
+import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button,TextField,Menu,MenuItem,FormControl,FormControlLabel,Radio,FormLabel,RadioGroup} from "@mui/material"
 import ProductDialog from './ProductDialog';
 import AlertDialog from './AlertDialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
@@ -223,6 +223,35 @@ console.log(JSON.stringify(item));
        
       }, []);
 
+      const productsAsc = async () => {
+        const result = await axios.get(`http://localhost:4250/api/proizvod/`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+            if (error.response && error.response.status === 403) {
+              AuthService.logout();
+              navigate("/login");
+              window.location.reload();
+            }
+          });
+        const data = await result.data;
+       
+        setCategories(data)
+       
+        
+    };
+
+    const productsDesc = async () => {
+      const result = await axios.get(`http://localhost:4250/api/kategorija`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
+        });
+      const data = await result.data;
+     
+      setCategories(data)
+     
+      
+  };
 
     return (<div>
       
@@ -233,6 +262,18 @@ console.log(JSON.stringify(item));
           <Button onClick={recordButtonPosition}>
               Kategorija
           </Button>
+          <FormControl>
+      <FormLabel id="demo-radio-buttons-group-label">Sortiranje</FormLabel>
+      <RadioGroup
+        aria-labelledby="demo-radio-buttons-group-label"
+        defaultValue=""
+        name="radio-buttons-group"
+      >
+        <FormControlLabel value="asc" control={<Radio onChange={()=>productsAsc()}/>} label="Cena rastuce" />
+        <FormControlLabel value="desc" control={<Radio onChange={()=>productsDesc()}/>} label="Cena opadajuce" />
+      
+      </RadioGroup>
+    </FormControl>
           <Menu
               anchorEl={anchorEl}
               open={menuOpen}
@@ -247,6 +288,7 @@ console.log(JSON.stringify(item));
        <Table aria-label='tbl'>
            <TableHead >
            <TableCell>Proizvod</TableCell>
+           <TableCell>Kategorija</TableCell>
            <TableCell>Cena</TableCell>
            <TableCell>Dostupan</TableCell>
            <TableCell>Dostupna kolicina</TableCell>
@@ -262,6 +304,7 @@ console.log(JSON.stringify(item));
                {products?.map((product)=>(
                    <TableRow key={product.proizvodId}>
                        <TableCell>{product.naziv}</TableCell>
+                       <TableCell>{product.nazivKategorije}</TableCell>
                        <TableCell>{product.cena}</TableCell>
                        <TableCell>{product.dostupan? 'Da' : 'Ne'}</TableCell>
                        <TableCell>{product.dostupnaKolicina}</TableCell>
