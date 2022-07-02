@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 function Products(){
 
     const [products, setProducts] = useState([]);
+    const [str, setStr] = useState("[]");
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [orderItems,setOrderItems]= useState([]);
@@ -46,7 +47,7 @@ function Products(){
     const productsByCategory = async (category) => {
       setSelectedCategory(category);
       console.log(selectedCategory)
-      const result = await axios.get(`http://localhost:4250/api/proizvod/byKategorija/`+selectedCategory, { headers: {'Authorization': `Bearer ${token}` }})
+      const result = await axios.get(`http://localhost:4250/api/proizvod/byKategorija/`+category, { headers: {'Authorization': `Bearer ${token}` }})
       .catch(function (error) {
         if (error.response && error.response.status === 403) {
           AuthService.logout();
@@ -238,21 +239,72 @@ console.log(JSON.stringify(item));
         
     };
 
-    const productsDesc = async () => {
-      const result = await axios.get(`http://localhost:4250/api/kategorija`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+   
+
+    const sort = async (ascdesc) => {
+      //1 je asc,2 je desc
+      console.log(q + " "+ typeof(q))
+      console.log(selectedCategory + " "+ typeof(selectedCategory))
+      if(q.length != 0 && selectedCategory.length!==0){
+        console.log("uso q!=null && selectedCategory!=null")
+        const result = await axios.get(`http://localhost:4250/api/proizvod/byNazivAndKategorijaSorted/`+ q +`/`+selectedCategory+`/`+ascdesc, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
           if (error.response && error.response.status === 403) {
             AuthService.logout();
             navigate("/login");
             window.location.reload();
           }
         });
-      const data = await result.data;
+        const data = await result.data;
+        setProducts(data)
+      }
+      else if(q.length==0 && selectedCategory.length!==0){
+        console.log("uso q==null && setSelectedCategory!=null")
+        const result = await axios.get(`http://localhost:4250/api/proizvod/byNazivAndKategorijaSorted/null/`+selectedCategory+`/`+ascdesc, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
+        });
+        const data = await result.data;
+        setProducts(data)
+      }
+      else if(q.length != 0 && selectedCategory.length==0){
+        console.log("uso q != null && setSelectedCategory==null")
+        const result = await axios.get(`http://localhost:4250/api/proizvod/byNazivAndKategorijaSorted/`+ q +`/0/`+ascdesc, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
+        });
+        const data = await result.data;
+        setProducts(data)
+      }else{
+        console.log("uso odje")
+        const result = await axios.get(`http://localhost:4250/api/proizvod/byNazivAndKategorijaSorted/null/0/`+ascdesc, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
+        });
+        const data = await result.data;
+        setProducts(data)
+      }
+
+   
+      
      
-      setCategories(data)
+    
      
       
   };
+      
 
+
+
+  
     return (<div>
       
       { localStorage.token != null? <Button variant="outlined" onClick={() => search()}>Odjava</Button>:null}
@@ -269,8 +321,8 @@ console.log(JSON.stringify(item));
         defaultValue=""
         name="radio-buttons-group"
       >
-        <FormControlLabel value="asc" control={<Radio onChange={()=>productsAsc()}/>} label="Cena rastuce" />
-        <FormControlLabel value="desc" control={<Radio onChange={()=>productsDesc()}/>} label="Cena opadajuce" />
+        <FormControlLabel value="asc" control={<Radio onChange={()=>sort(1)}/>} label="Cena rastuce" />
+        <FormControlLabel value="desc" control={<Radio onChange={()=>sort(2)}/>} label="Cena opadajuce" />
       
       </RadioGroup>
     </FormControl>
@@ -280,7 +332,7 @@ console.log(JSON.stringify(item));
               onClose={closeMenu}>
         
                {categories.map((category) => (
-          <MenuItem key={category.kategorijaId} value={category.kategorijaId} onClick={(ev) => productsByCategory(ev.target.value)}>{category.nazivKategorije}</MenuItem>
+          <MenuItem key={category.kategorijaId} value={category.kategorijaId} onClick={() => productsByCategory(category.kategorijaId)}>{category.nazivKategorije}</MenuItem>
         ))}
           </Menu>
       </React.Fragment>
