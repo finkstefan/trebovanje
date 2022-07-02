@@ -42,6 +42,7 @@ import {
 } from "react-router-dom";
 import App from "./App";
 import Login from "./components/Login";
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 
 const rootElement = document.getElementById("root");

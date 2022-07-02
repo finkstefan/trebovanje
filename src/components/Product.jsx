@@ -7,16 +7,23 @@ import ProductUpdateDialog from './ProductUpdateDialog';
 import authHeader from '../services/auth-header';
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import Pagination from "./Pagination"
 
 function Products(){
 
     const [products, setProducts] = useState([]);
-    const [str, setStr] = useState("[]");
+    const [productsPerPage, setProductsPerPage] = useState(2);
+    const [currentPage, setCurrentPage] = useState(1);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [orderItems,setOrderItems]= useState([]);
     const [itemsCounted,setItemsCounted]= useState([]);
    const [isAdmin,setIsAdmin]= useState(true);
+
+   const indexOfLastProd=currentPage*productsPerPage;
+   const indexOfFirstProd = indexOfLastProd-productsPerPage;
+
+   const currentProds = products.slice(indexOfFirstProd,indexOfLastProd);
  
    const token = JSON.parse(localStorage.getItem("token"));
 
@@ -302,7 +309,7 @@ console.log(JSON.stringify(item));
   };
       
 
-
+const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   
     return (<div>
@@ -353,7 +360,7 @@ console.log(JSON.stringify(item));
        
            </TableHead>
            <TableBody>
-               {products?.map((product)=>(
+               {currentProds?.map((product)=>(
                    <TableRow key={product.proizvodId}>
                        <TableCell>{product.naziv}</TableCell>
                        <TableCell>{product.nazivKategorije}</TableCell>
@@ -361,6 +368,8 @@ console.log(JSON.stringify(item));
                        <TableCell>{product.dostupan? 'Da' : 'Ne'}</TableCell>
                        <TableCell>{product.dostupnaKolicina}</TableCell>
                       <TableCell> {isAdmin? null:<Button variant="contained" onClick={() => {addOrderItem(product.proizvodId)}}>Dodaj</Button>}
+                   
+                   
                      {isAdmin?  <AlertDialog
       open={open}
       onClose={handleClose}
@@ -383,7 +392,11 @@ console.log(JSON.stringify(item));
            
        </Table>
         </TableContainer>
-     
+        <Pagination
+        postsPerPage={productsPerPage}
+        totalPosts={products.length}
+        paginate={paginate}
+      />
         <br/>
       {isAdmin?null:<Button variant="contained" onClick={() => {addOrder()}}>Potvrdi porudzbinu</Button>}  
             
