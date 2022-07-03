@@ -16,6 +16,8 @@ function Orders(){
     const [orderId,setOrderId]= useState(0);
     const [itemsCounted,setItemsCounted]= useState([]);
    const [isAdmin,setIsAdmin]= useState(true);
+
+   const [userEmail,setUserEmail]= useState("");
  
    const token = JSON.parse(localStorage.getItem("token"));
 
@@ -65,23 +67,48 @@ function Orders(){
         getOrders();
     },[]);
 
-   
+    useEffect(() => {
+      var token=localStorage.getItem('decodedToken')
+      if(token.Role=="Admin"){
+        setIsAdmin(true);
+      }else{
+        setIsAdmin(false);
+        setUserEmail(token.Email);
+      }
+
+
+  },[]);
 
 
 
     
     const getOrders = async () => {
+      if(isAdmin){
         const result = await axios.get(`http://localhost:4250/api/porudzbina`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
-            if (error.response && error.response.status === 403) {
-              AuthService.logout();
-              navigate("/login");
-              window.location.reload();
-            }
-          });;
-        const data = await result.data;
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
+        });
+      const data = await result.data;
+     
+    // console.log(data)
+      setOrders(data)
+      }else{
+        const result = await axios.get(`http://localhost:4250/api/porudzbina/byDistributer/`+userEmail, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
+        });
+      const data = await result.data;
+     
+    // console.log(data)
+      setOrders(data)
+      }
        
-      // console.log(data)
-        setOrders(data)
        
     };
 

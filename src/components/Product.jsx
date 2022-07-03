@@ -19,6 +19,7 @@ function Products(){
     const [orderItems,setOrderItems]= useState([]);
     const [itemsCounted,setItemsCounted]= useState([]);
    const [isAdmin,setIsAdmin]= useState(true);
+   const [userEmail,setUserEmail]= useState("");
 
    const indexOfLastProd=currentPage*productsPerPage;
    const indexOfFirstProd = indexOfLastProd-productsPerPage;
@@ -49,6 +50,21 @@ function Products(){
     useEffect(() => {
         getProducts();
     },[]);
+
+    useEffect(() => {
+      var role=localStorage.getItem('userRole');
+      var email=localStorage.getItem('userEmail');
+      
+      if(role=="Admin"){
+        setIsAdmin(true);
+        console.log('admin je ')
+      }else{
+        setIsAdmin(false);
+        setUserEmail(token.Email);
+      }
+
+
+  },[]);
 
    
     const productsByCategory = async (category) => {

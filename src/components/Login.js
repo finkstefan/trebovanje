@@ -36,10 +36,15 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  var passwordHash = require('password-hash');
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await AuthService.login(username, password).then(
+
+     // var hashedPassword = passwordHash.generate(password);
+
+      await AuthService.login(username,password).then(
         () => {
           navigate("/");
           window.location.reload();
