@@ -15,7 +15,7 @@ function Orders(){
     const [orderItems,setOrderItems]= useState([]);
     const [orderId,setOrderId]= useState(0);
     const [itemsCounted,setItemsCounted]= useState([]);
-   const [isAdmin,setIsAdmin]= useState();
+   const [isAdmin,setIsAdmin]= useState(Boolean);
 
    const [userEmail,setUserEmail]= useState("");
  
@@ -62,33 +62,26 @@ function Orders(){
       }
 
 
-    
-    useEffect(() => {
-        getOrders();
-    },[]);
-
     useEffect(() => {
       var role=localStorage.getItem('userRole');
       var email=localStorage.getItem('userEmail');
       
       if(role=="Admin"){
-        setIsAdmin(true);
-        console.log('admin je ')
+        getOrders(true);
       }else{
-        setIsAdmin(false);
+       
         console.log(localStorage.getItem('userEmail'))
-        console.log(email)
-        setUserEmail(email);
+        getOrders(false);
       }
-
+      
 
   },[]);
 
 
 
     
-    const getOrders = async () => {
-      if(isAdmin){
+    const getOrders = async (admin) => {
+      if(admin){
         console.log("uso 1" + userEmail)
         const result = await axios.get(`http://localhost:4250/api/porudzbina`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
           if (error.response && error.response.status === 403) {

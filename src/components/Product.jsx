@@ -330,7 +330,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
     return (<div>
       
-      { localStorage.token != null? <Button variant="outlined" onClick={() => search()}>Odjava</Button>:null}
+      { localStorage.token != null? <Button variant="outlined" onClick={() => logOut()}>Odjava</Button>:null}
         <h2>Proizvodi</h2>
         <TextField id="standard-basic" label="Naziv" variant="standard" onChange={(e) => setQ(e.target.value)}/><Button variant="outlined"  onClick={search}>Pretrazi</Button>
         <React.Fragment>
