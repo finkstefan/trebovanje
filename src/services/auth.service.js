@@ -23,6 +23,9 @@ const login = (username, password) => {
         //console.log(decoded)
         localStorage.setItem('userRole', role);
         localStorage.setItem('userEmail', email);
+      /*  console.log(decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']);
+        console.log(email)
+        console.log(localStorage.getItem('userEmail')) */
         
       }
 

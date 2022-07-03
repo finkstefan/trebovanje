@@ -18,7 +18,7 @@ function Products(){
     const [selectedCategory, setSelectedCategory] = useState("");
     const [orderItems,setOrderItems]= useState([]);
     const [itemsCounted,setItemsCounted]= useState([]);
-   const [isAdmin,setIsAdmin]= useState(true);
+   const [isAdmin,setIsAdmin]= useState();
    const [userEmail,setUserEmail]= useState("");
 
    const indexOfLastProd=currentPage*productsPerPage;
@@ -60,7 +60,7 @@ function Products(){
         console.log('admin je ')
       }else{
         setIsAdmin(false);
-        setUserEmail(token.Email);
+        setUserEmail(email);
       }
 
 
@@ -368,11 +368,11 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
            <TableCell>Dostupan</TableCell>
            <TableCell>Dostupna kolicina</TableCell>
 
-          {/*isAdmin? <Button variant="contained" onClick={handleClickOpen}>Novi proizvod</Button> : null*/}
-          <ProductDialog
+          {isAdmin?  <ProductDialog
       open={open}
       onClose={handleClose}
-      />
+      /> : null}
+         
        
            </TableHead>
            <TableBody>

@@ -15,7 +15,7 @@ function Orders(){
     const [orderItems,setOrderItems]= useState([]);
     const [orderId,setOrderId]= useState(0);
     const [itemsCounted,setItemsCounted]= useState([]);
-   const [isAdmin,setIsAdmin]= useState(true);
+   const [isAdmin,setIsAdmin]= useState();
 
    const [userEmail,setUserEmail]= useState("");
  
@@ -68,12 +68,17 @@ function Orders(){
     },[]);
 
     useEffect(() => {
-      var token=localStorage.getItem('decodedToken')
-      if(token.Role=="Admin"){
+      var role=localStorage.getItem('userRole');
+      var email=localStorage.getItem('userEmail');
+      
+      if(role=="Admin"){
         setIsAdmin(true);
+        console.log('admin je ')
       }else{
         setIsAdmin(false);
-        setUserEmail(token.Email);
+        console.log(localStorage.getItem('userEmail'))
+        console.log(email)
+        setUserEmail(email);
       }
 
 
@@ -84,6 +89,7 @@ function Orders(){
     
     const getOrders = async () => {
       if(isAdmin){
+        console.log("uso 1" + userEmail)
         const result = await axios.get(`http://localhost:4250/api/porudzbina`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
           if (error.response && error.response.status === 403) {
             AuthService.logout();
@@ -96,7 +102,7 @@ function Orders(){
     // console.log(data)
       setOrders(data)
       }else{
-        const result = await axios.get(`http://localhost:4250/api/porudzbina/byDistributer/`+userEmail, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+        const result = await axios.get(`http://localhost:4250/api/porudzbina/byDistributer/`+localStorage.getItem('userEmail'), { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
           if (error.response && error.response.status === 403) {
             AuthService.logout();
             navigate("/login");
