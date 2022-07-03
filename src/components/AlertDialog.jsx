@@ -7,7 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios'
 
-export default function AlertDialog({value}) {
+export default function AlertDialog({table,id}) {
   const [open, setOpen] = React.useState(false);
   const [ok, setOk] = React.useState(false);
 
@@ -30,9 +30,15 @@ export default function AlertDialog({value}) {
      //   body: JSON.stringify(order)
       }
 
+    if(table==1){ //proizvod
+      fetch(`http://localhost:4250/api/proizvod/${id}`, requestOptions)
+      .then(response => console.log(response))
+    }else if(table==2){//kategorija
+      fetch(`http://localhost:4250/api/kategorija/${id}`, requestOptions)
+      .then(response => console.log(response))
+    } 
     
-    fetch(`http://localhost:4250/api/proizvod/${value}`, requestOptions)
-    .then(response => console.log(response))
+    setOpen(false)
     
   };
 
