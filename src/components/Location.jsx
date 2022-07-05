@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button, breadcrumbsClasses} from "@mui/material"
-import ProductDialog from './ProductDialog';
+import LocationDialog from './LocationDialog';
+import LocationUpdateDialog from './LocationUpdateDialog';
 import AlertDialog from './AlertDialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
 import StripeCheckout from 'react-stripe-checkout'
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
-
+import Pagination from "./Pagination"
 
 function Locations(){
 
     const [locations, setLocations] = useState([]);
+    const [locationsPerPage, setLocationsPerPage] = useState(3);
+    const [currentPage, setCurrentPage] = useState(1);
 
    const [isAdmin,setIsAdmin]= useState(Boolean);
 
@@ -24,7 +27,10 @@ function Locations(){
 
     const [open, setOpen] = React.useState(false);
 
-
+    const indexOfLastLocation=currentPage*locationsPerPage;
+    const indexOfFirstLocation = indexOfLastLocation-locationsPerPage;
+ 
+    const currentLocations = locations.slice(indexOfFirstLocation,indexOfLastLocation);
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -34,7 +40,7 @@ function Locations(){
       setOpen(false);
     };
 
-    
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
     useEffect(() => {
@@ -75,23 +81,35 @@ setLocations(data)
            <TableCell>Drzava</TableCell>
            <TableCell>Grad</TableCell>
            <TableCell>Adresa</TableCell>
-       
-           
-          
-
-          {/*isAdmin? <Button variant="con
-          tained" onClick={handleClickOpen}>Novi proizvod</Button> : null*/}
-        
+   
+         <LocationDialog
+      open={open}
+      onClose={handleClose}
+      />
        
            </TableHead>
            <TableBody>
-               {locations?.map((loc)=>(
+               {currentLocations?.map((loc)=>(
                    <TableRow key={loc.lokacijaId}>
+                    <TableCell>{loc.drzava}</TableCell>
                        <TableCell>{loc.grad}</TableCell>
-                       <TableCell>{loc.drzava}</TableCell>
                        <TableCell>{loc.adresa}</TableCell>
                       
-                      
+                       <LocationUpdateDialog
+      open={open}
+      onClose={handleClose}
+      lokacijaId = {loc.lokacijaId}
+     drzava={loc.drzava}
+     grad={loc.grad}
+     adresa={loc.adresa}
+      />
+
+<AlertDialog
+      open={open}
+      onClose={handleClose}
+      table = "3"
+     id={loc.lokacijaId}
+      />
                      
               
                    </TableRow>
@@ -101,7 +119,11 @@ setLocations(data)
        </Table>
         </TableContainer>
 
-       
+        <Pagination
+        postsPerPage={locationsPerPage}
+        totalPosts={locations.length}
+        paginate={paginate}
+      />
 
         
       

@@ -13,10 +13,14 @@ import { useNavigate } from "react-router-dom";
 export default function ProductDialog() {
   const [open, setOpen] = React.useState(false);
   const [productName, setProductName] = React.useState('');
+    const [category, setCategory] = React.useState();
   const [productPrice, setProductPrice] = React.useState(0);
+  const [availableAmount, setAvailableAmount] = React.useState(0);
   const [productAvailable, setProductAvailable] = React.useState(true);
 
   var randomString = require("random-string");
+
+  const navigate = useNavigate();
 
  // const name = useRef();
   
@@ -33,11 +37,31 @@ export default function ProductDialog() {
   };
 
   const handleConfirm = () => {
-    setProductName(name)
-   setProductPrice(price)
-   setProductAvailable(available)
+    postProduct(productName,category,productPrice,availableAmount)
+  };
 
-    console.log(productName);
+  const handleProductNameChange = event => {
+    setProductName(event.target.value);
+
+   // console.log('value is:', event.target.value);
+  };
+
+  const handleProductPriceChange = event => {
+    setProductPrice(event.target.value);
+
+   // console.log('value is:', event.target.value);
+  };
+
+  const handleProductCategoryChange = event => {
+    setCategory(event.target.value);
+
+   // console.log('value is:', event.target.value);
+  };
+
+  const handleProductAvailableAmountChange = event => {
+    setAvailableAmount(event.target.value);
+
+   // console.log('value is:', event.target.value);
   };
 
   const [name, setName] = useState('');
@@ -56,13 +80,13 @@ export default function ProductDialog() {
     console.log('value is:', event.target.value);
   };
 
-  const handleAvailableChange = event => {
-    setAvailable(event.target.value);
+  const handleCategoryChange = event => {
+    setCategory(event.target.value);
 
     console.log('value is:', event.target.value);
   };
 
-  function postProduct() {
+  function postProduct(prodName,prodCategory,prodPrice,prodAvailableAmount) {
     var productId = randomString({
       length: 8,
       numeric: true,
@@ -70,13 +94,27 @@ export default function ProductDialog() {
       special: false,
       
       });
-  //  const item = { proizovdId: productId,kategorijaId:,kolicina:count };
+
+
+
+    const pr = { proizvodId: productId,naziv:prodName,kategorijaId:prodCategory,cena:prodPrice,dostupan:true,dostupnaKolicina:prodAvailableAmount,adminId:1 };
+
+    console.log(pr)
 
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-     // body: JSON.stringify(item)
+      body: JSON.stringify(pr)
   };
+  fetch('http://localhost:4250/api/proizvod', requestOptions)
+    .then(response => console.log(response)).catch(function (error) {
+      if (error.response && error.response.status === 403) {
+        AuthService.logout();
+        navigate("/login");
+        window.location.reload();
+      }
+    });
+    setOpen(false)
   }
   return (
     <div>
@@ -93,7 +131,7 @@ export default function ProductDialog() {
        
             label="Naziv proizvoda"
             type="text"
-            onChange={handleNameChange}
+            onChange={handleProductNameChange}
             fullWidth
             variant="standard"
           />
@@ -101,7 +139,7 @@ export default function ProductDialog() {
             autoFocus
             margin="dense"
             id="price"
-            onChange={handlePriceChange}
+            onChange={handleProductPriceChange}
             label="Cena"
             type="text"
             fullWidth
@@ -110,10 +148,21 @@ export default function ProductDialog() {
             <TextField
             autoFocus
             margin="dense"
-            id="available"
-            onChange={handleAvailableChange}
-            label="Dostupan"
-            type="checkbox"
+            id="kategorija"
+            onChange={handleProductCategoryChange}
+            label="Kategorija"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+
+<TextField
+            autoFocus
+            margin="dense"
+            id="dostupnaKol"
+            onChange={handleProductAvailableAmountChange}
+            label="Dostupna kolicina"
+            type="text"
             fullWidth
             variant="standard"
           />

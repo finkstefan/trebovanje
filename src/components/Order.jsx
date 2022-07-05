@@ -7,12 +7,14 @@ import ProductUpdateDialog from './ProductUpdateDialog';
 import StripeCheckout from 'react-stripe-checkout'
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
-
+import Pagination from "./Pagination"
 
 function Orders(){
 
     const [orders, setOrders] = useState([]);
     const [orderItems,setOrderItems]= useState([]);
+    const [ordersPerPage, setOrdersPerPage] = useState(3);
+    const [currentPage, setCurrentPage] = useState(1);
     const [orderId,setOrderId]= useState(0);
     const [itemsCounted,setItemsCounted]= useState([]);
    const [isAdmin,setIsAdmin]= useState(Boolean);
@@ -21,12 +23,32 @@ function Orders(){
  
    const token = JSON.parse(localStorage.getItem("token"));
 
+   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     var randomString = require("random-string");
     const navigate = useNavigate();
 
+     useEffect(() => {
+      var role=localStorage.getItem('userRole');
+      var email=localStorage.getItem('userEmail');
+      
+      if(role=="Admin"){
+        setIsAdmin(true);
+        console.log('admin je ')
+      }else{
+        setIsAdmin(false);
+        setUserEmail(email);
+      }
+
+
+  },[]);
+
     const [open, setOpen] = React.useState(false);
 
-
+    const indexOfLastOrder=currentPage*ordersPerPage;
+    const indexOfFirstOrder = indexOfLastOrder-ordersPerPage;
+ 
+    const currentOrders = orders.slice(indexOfFirstOrder,indexOfLastOrder);
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -112,8 +134,8 @@ function Orders(){
     };
 
     
-    const getOrderItems = async () => {
-        const result = await axios.get(`http://localhost:4250/api/stavkaPorudzbine/stavkeByPorudzbinaId/${orderId}`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+    const getOrderItems = async (orId) => {
+        const result = await axios.get(`http://localhost:4250/api/stavkaPorudzbine/stavkeByPorudzbinaId/${orId}`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
             if (error.response && error.response.status === 403) {
               AuthService.logout();
               navigate("/login");
@@ -169,17 +191,23 @@ if (error.response && error.response.status === 403) {
        
            </TableHead>
            <TableBody>
-               {orders?.map((order)=>(
+               {currentOrders?.map((order)=>(
                    <TableRow key={order.porudzbinaId}>
                        <TableCell>{order.datum}</TableCell>
                        <TableCell>{order.distributer.nazivDistributera}</TableCell>
                        <TableCell>{order.iznos}</TableCell>
                        <TableCell>{order.isplacena? 'Da' : 'Ne'}</TableCell>
-                       <Button variant="contained" onClick={() => loadOrderItems(order.porudzbinaId)}>Prikazi stavke</Button>
+                       {isAdmin?  <AlertDialog
+      open={open}
+      onClose={handleClose}
+      table = "4"
+      id={order.porudzbinaId}
+      />:null}
+                       <Button onClick={() => getOrderItems(order.porudzbinaId)}>Prikazi stavke</Button>
                   {order.isplacena? null:<StripeCheckout stripeKey="pk_test_51LEHoBFYog7W2g6eQwYMObxVNQEGmkFic6yIPG5mF0nVida85a1Rd24lumFnPJ3PqEm4BV0Y8CY8V7f6xTPmU5or00B8as1mhg" token={(token) => {     
      handleToken(token, order.iznos, order.porudzbinaId);
    }} amount={order.iznos * 100} /> }  
-              
+                
                    </TableRow>
                ))}
            </TableBody>
@@ -187,7 +215,11 @@ if (error.response && error.response.status === 403) {
        </Table>
         </TableContainer>
 
-       
+        <Pagination
+        postsPerPage={ordersPerPage}
+        totalPosts={orders.length}
+        paginate={paginate}
+      />
 
         <h3>Stavke izabrane porudzbine</h3>
         {orderItems==undefined  ? null:
@@ -211,7 +243,12 @@ if (error.response && error.response.status === 403) {
                        <TableCell>{orderItem.porudzbinaId}</TableCell>
                        <TableCell>{orderItem.kolicina}</TableCell>
 
-                     
+                       <AlertDialog
+      open={open}
+      onClose={handleClose}
+      table = "5"
+      id={orderItem.stavkaPorudzbineId}
+      />
                    </TableRow>
                ))}
            </TableBody>

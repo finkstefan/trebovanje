@@ -37,6 +37,26 @@ export default function AlertDialog({table,id}) {
       fetch(`http://localhost:4250/api/kategorija/${id}`, requestOptions)
       .then(response => console.log(response))
     } 
+    else if(table==3){//lokacija
+      fetch(`http://localhost:4250/api/lokacija/${id}`, requestOptions)
+      .then(response => console.log(response))
+    } 
+    else if(table==4){//porudzbina
+      fetch(`http://localhost:4250/api/porudzbina/${id}`, requestOptions)
+      .then(response => console.log(response))
+    }
+    else if(table==5){//stavka porudzbine
+      fetch(`http://localhost:4250/api/stavkaPorudzbine/${id}`, requestOptions)
+      .then(response => console.log(response))
+    }
+    else if(table==6){//admin
+      fetch(`http://localhost:4250/api/korisnik/admin/${id}`, requestOptions)
+      .then(response => console.log(response))
+    } 
+    else if(table==7){//distributer
+      fetch(`http://localhost:4250/api/korisnik/distributer/${id}`, requestOptions)
+      .then(response => console.log(response))
+    } 
     
     setOpen(false)
     

@@ -4,15 +4,17 @@ import {TableContainer,Table,TableHead,TableBody,TableRow,TableCell,Paper,Button
 import ProductDialog from './ProductDialog';
 import AlertDialog from './AlertDialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
+import GroupedButtons from './GroupedButtons';
 import authHeader from '../services/auth-header';
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
 import Pagination from "./Pagination"
+import AddOrderItemDialog from './AddOrderItemDialog';
 
 function Products(){
 
     const [products, setProducts] = useState([]);
-    const [productsPerPage, setProductsPerPage] = useState(2);
+    const [productsPerPage, setProductsPerPage] = useState(4);
     const [currentPage, setCurrentPage] = useState(1);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -20,6 +22,7 @@ function Products(){
     const [itemsCounted,setItemsCounted]= useState([]);
    const [isAdmin,setIsAdmin]= useState();
    const [userEmail,setUserEmail]= useState("");
+   const [orderCreated,setOrderCreated]= useState(false);
 
    const indexOfLastProd=currentPage*productsPerPage;
    const indexOfFirstProd = indexOfLastProd-productsPerPage;
@@ -27,6 +30,9 @@ function Products(){
    const currentProds = products.slice(indexOfFirstProd,indexOfLastProd);
  
    const token = JSON.parse(localStorage.getItem("token"));
+
+   
+
 
     var randomString = require("random-string");
     const navigate = useNavigate();
@@ -103,36 +109,28 @@ function Products(){
        
     };
 
-    function addOrder(){
-      var orderId = randomString({
-        length: 8,
-        numeric: true,
-        letters: false,
-        special: false,
-        
+   /* function confirmOrder(){
+    
+      var todayDate = new Date().toISOString().slice(0, 10);
+
+        const loc = { porudzbinaId:localStorage.getItem("orderId"),datum:todayDate,distributerEmail:localStorage.getItem("userEmail") };
+    
+        const requestOptions = {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(loc)
+      };
+      fetch('http://localhost:4250/api/lokacija', requestOptions)
+        .then(response => console.log(response)).catch(function (error) {
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
         });
-
-        const keyedArr = orderItems.reduce((accumulator, currentValue) => {
-          const key = currentValue.toString();
-          if (!(key in accumulator))
-            accumulator[key] = 1;
-          else
-            accumulator[key] += 1;
-            
-          return accumulator;
-        }, {});
-        console.log(keyedArr)
-        setItemsCounted(keyedArr);
-
-        postOrder(orderId);
-        
-
-  Object.entries(keyedArr).map(([key, value]) => (
-        
-        postOrderItem(key,value,orderId)
-      )); 
+        setOpen(false)
       
-    }
+    }*/
 
     function addOrderItem(id) {
      
@@ -170,7 +168,7 @@ console.log(JSON.stringify(item));
 
        function postOrder(id) {
         var todayDate = new Date().toISOString().slice(0, 10);
-        const order = { porudzbinaId: id,datum:todayDate,distributerId:4,Isplacena:false };
+        const order = { porudzbinaId: id,datum:todayDate,distributerId:localStorage.getItem('userEmail'),Isplacena:false };
 
         const requestOptions = {
           method: 'POST',
@@ -190,7 +188,44 @@ console.log(JSON.stringify(item));
       });
       };
 
-      
+      function createOrder() {
+        var orId = randomString({
+          length: 8,
+          numeric: true,
+          letters: false,
+          special: false,
+          
+          });
+
+localStorage.setItem("orderId",orId)
+
+        var todayDate = new Date().toISOString().slice(0, 10);
+        const order = { porudzbinaId: orId,datum:todayDate,distributerEmail:localStorage.getItem('userEmail'),Isplacena:false };
+
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${token}` },
+          body: JSON.stringify(order)
+        }
+
+        console.log(JSON.stringify(order))
+        
+      fetch('http://localhost:4250/api/porudzbina', requestOptions)
+      .then(setOrderCreated(true)).catch(function (error) {
+        if (error.response && error.response.status === 403) {
+          AuthService.logout();
+          navigate("/login");
+          window.location.reload();
+        }
+      });
+      };
+
+      function endOrder(){
+localStorage.removeItem("orderId");
+setOrderCreated(false);
+      }
+
+
   function logOut(){
     AuthService.logout();
     navigate("/login");
@@ -331,7 +366,8 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
     return (<div>
       
       { localStorage.token != null? <Button variant="outlined" onClick={() => logOut()}>Odjava</Button>:null}
-        <h2>Proizvodi</h2>
+    { orderCreated ? <Button variant="outlined" onClick={() => endOrder()}>Zavrsi porudzbinu</Button>:<Button variant="outlined" onClick={() => createOrder()}>Napravi porudzbinu</Button>}  
+       <h2>Proizvodi</h2>
         <TextField id="standard-basic" label="Naziv" variant="standard" onChange={(e) => setQ(e.target.value)}/><Button variant="outlined"  onClick={search}>Pretrazi</Button>
         <React.Fragment>
           <Button onClick={recordButtonPosition}>
@@ -383,13 +419,18 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
                        <TableCell>{product.cena}</TableCell>
                        <TableCell>{product.dostupan? 'Da' : 'Ne'}</TableCell>
                        <TableCell>{product.dostupnaKolicina}</TableCell>
-                      <TableCell> {isAdmin? null:<Button variant="contained" onClick={() => {addOrderItem(product.proizvodId)}}>Dodaj</Button>}
+                      <TableCell> {!isAdmin && orderCreated ? <AddOrderItemDialog  open={open}
+      onClose={handleClose}
+      prodId = {product.proizvodId}
+      ordId = {localStorage.getItem("orderId")}
+      />:null}
                    
                    
                      {isAdmin?  <AlertDialog
       open={open}
       onClose={handleClose}
-      value = {product.proizvodId}
+      id = {product.proizvodId}
+      table="1"
       />:null}
                      {isAdmin? <ProductUpdateDialog
       open={open}
@@ -397,7 +438,10 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
       cenaPr = {product.cena}
       idPr={product.proizvodId}
       nazivPr={product.naziv}
-      dostupnost={product.dostupan}
+      kategorijaId={product.kategorijaId}
+      dostupanPr={product.dostupan}
+      dostupnaKolPr={product.dostupnaKolicina}
+      adminIdPr={product.adminId}
       />:null}
 
       </TableCell>
@@ -413,8 +457,9 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
         totalPosts={products.length}
         paginate={paginate}
       />
+
         <br/>
-      {isAdmin?null:<Button variant="contained" onClick={() => {addOrder()}}>Potvrdi porudzbinu</Button>}  
+      
             
             
         </div>)

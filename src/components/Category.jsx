@@ -7,11 +7,13 @@ import CategoryUpdateDialog from './CategoryUpdateDialog';
 import StripeCheckout from 'react-stripe-checkout'
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
-
+import Pagination from "./Pagination"
 
 function Categories(){
 
     const [categories, setCategories] = useState([]);
+    const [categoriesPerPage, setCategoriesPerPage] = useState(3);
+    const [currentPage, setCurrentPage] = useState(1);
 
    const [isAdmin,setIsAdmin]= useState(Boolean);
 
@@ -23,8 +25,11 @@ function Categories(){
     const navigate = useNavigate();
 
     const [open, setOpen] = React.useState(false);
-
-
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const indexOfLastCategory=currentPage*categoriesPerPage;
+    const indexOfFirstCategory = indexOfLastCategory-categoriesPerPage;
+ 
+    const currentCategories = categories.slice(indexOfFirstCategory,indexOfLastCategory);
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -82,7 +87,7 @@ setCategories(data)
         
            </TableHead>
            <TableBody>
-               {categories?.map((cat)=>(
+               {currentCategories?.map((cat)=>(
                    <TableRow key={cat.kategorijaId}>
                        <TableCell>{cat.nazivKategorije}</TableCell>
                       
@@ -109,7 +114,11 @@ setCategories(data)
         </TableContainer>
 
        
-
+        <Pagination
+        postsPerPage={categoriesPerPage}
+        totalPosts={categories.length}
+        paginate={paginate}
+      />
         
       
             

@@ -10,9 +10,11 @@ function Home(){
         <div>
             <Product />
             <Order />
-            <User />
-            <Category />
-            <Location />
+            {localStorage.getItem("userRole")=="Admin" ?
+           <React.Fragment> <User />
+           <Category />
+           <Location /></React.Fragment>  :null}
+          
             
         </div>
     )

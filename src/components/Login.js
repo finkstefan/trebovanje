@@ -14,6 +14,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Snackbar from '@mui/material/Snackbar';
+
 
 function Copyright(props) {
   return (
@@ -33,10 +35,14 @@ const theme = createTheme();
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const [openSnack, setOpenSnack] = React.useState(false);
   const navigate = useNavigate();
 
   var passwordHash = require('password-hash');
+
+  const handleCloseSnack = () => {
+    setOpenSnack(false);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -50,7 +56,7 @@ const Login = () => {
           window.location.reload();
         },
         (error) => {
-          console.log(error);
+          setOpenSnack(true);
         }
       );
     } catch (err) {
@@ -117,8 +123,16 @@ const Login = () => {
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
+        <Snackbar
+    open={openSnack}
+    autoHideDuration={3000}
+    onClose={handleCloseSnack }
+    message="Nepostojeci nalog"
+   
+  />
       </Container>
     </ThemeProvider>
+   
   );
 }
 

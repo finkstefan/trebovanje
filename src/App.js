@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="App">
-     <h1>ProCure - online trebovanje</h1>
+     <h1 adjustsFontSizeToFit={true} numberOfLines={1}>ProCure - online trebovanje</h1>
      
      <Pages />
     </div>
