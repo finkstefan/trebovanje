@@ -53,6 +53,13 @@ function Orders(){
     const handleClickOpen = () => {
       setOpen(true);
     };
+
+    const handleRefreshItems = () => {
+      getOrderItems();
+    };
+    const handleRefreshOrders = () => {
+      getOrders();
+    };
   
     const handleClose = () => {
       setOpen(false);
@@ -188,7 +195,7 @@ if (error.response && error.response.status === 403) {
           {/*isAdmin? <Button variant="con
           tained" onClick={handleClickOpen}>Novi proizvod</Button> : null*/}
         
-       
+        <Button variant="outlined" onClick={handleRefreshOrders}>Osvezi</Button> 
            </TableHead>
            <TableBody>
                {currentOrders?.map((order)=>(
@@ -231,7 +238,7 @@ if (error.response && error.response.status === 403) {
            <TableCell>Kolicina</TableCell>
           
 
-          {/*isAdmin? <Button variant="contained" onClick={handleClickOpen}>Novi proizvod</Button> : null*/}
+      <Button variant="outlined" onClick={handleRefreshItems}>Osvezi</Button> 
         
        
            </TableHead>
