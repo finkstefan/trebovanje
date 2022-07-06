@@ -42,7 +42,9 @@ function Locations(){
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-
+    const handleParentFun = () =>{
+      console.log("Call to Parent Component!");
+    }
     useEffect(() => {
      
       getLocations();
@@ -85,6 +87,10 @@ setLocations(data)
          <LocationDialog
       open={open}
       onClose={handleClose}
+      handleParentFun={()=>{
+        getLocations()
+       
+      }}
       />
        
            </TableHead>
@@ -102,6 +108,7 @@ setLocations(data)
      drzava={loc.drzava}
      grad={loc.grad}
      adresa={loc.adresa}
+     
       />
 
 <AlertDialog

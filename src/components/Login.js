@@ -50,7 +50,7 @@ const Login = () => {
 
       var hashedPassword = sha256(password);
 console.log(hashedPassword)
-      await AuthService.login(username,hashedPassword).then(
+      await AuthService.login(username,password).then(
         () => {
           navigate("/");
           window.location.reload();

@@ -11,11 +11,11 @@ import { useEffect, useState, useRef } from "react";
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
 
-export default function AddOrderItemDialog({prodId,ordId}) {
+export default function AddOrderItemDialog(props) {
   const [open, setOpen] = React.useState(false);
   const [openSnack, setOpenSnack] = React.useState(false);
-  const [productId, setProductId] = React.useState(prodId);
-  const [orderId, setOrderId] = React.useState(ordId);
+  const [productId, setProductId] = React.useState(props.prodId);
+  const [orderId, setOrderId] = React.useState(props.ordId);
   const [amount, setAmount] = useState(0);
  
 
@@ -70,7 +70,7 @@ export default function AddOrderItemDialog({prodId,ordId}) {
       });
   //  const item = { proizovdId: productId,kategorijaId:,kolicina:count };
 
-  const item = { stavkaPorudzbineId: itemId,proizvodId:prodId,porudzbinaId:ordId,kolicina:amount };
+  const item = { stavkaPorudzbineId: itemId,proizvodId:props.prodId,porudzbinaId:props.ordId,kolicina:amount };
 console.log(item)
   const requestOptions = {
     method: 'POST',
@@ -103,6 +103,7 @@ fetch('http://localhost:4250/api/stavkaPorudzbine', requestOptions)
     });
     
     setOpen(false)
+    props.handleParentFun()
   }
 
   return (

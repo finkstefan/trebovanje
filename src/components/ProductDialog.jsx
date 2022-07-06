@@ -9,6 +9,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect, useState, useRef } from "react";
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import Select from "react-dropdown-select";
+import axios from 'axios'
 
 export default function ProductDialog() {
   const [open, setOpen] = React.useState(false);
@@ -17,7 +19,7 @@ export default function ProductDialog() {
   const [productPrice, setProductPrice] = React.useState(0);
   const [availableAmount, setAvailableAmount] = React.useState(0);
   const [productAvailable, setProductAvailable] = React.useState(true);
-
+  const [categories, setCategories] = React.useState([]);
   var randomString = require("random-string");
 
   const navigate = useNavigate();
@@ -36,9 +38,33 @@ export default function ProductDialog() {
     setOpen(false);
   };
 
+ 
+  const token = JSON.parse(localStorage.getItem("token"));
+
   const handleConfirm = () => {
     postProduct(productName,category,productPrice,availableAmount)
   };
+  useEffect(() => {
+       
+    const getCategories = async () => {
+      const result = await axios.get(`http://localhost:4250/api/kategorija`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+          if (error.response && error.response.status === 403) {
+            AuthService.logout();
+            navigate("/login");
+            window.location.reload();
+          }
+        });
+      const data = await result.data;
+     
+      setCategories(data)
+     
+      
+  };
+      getCategories();
+     
+     
+    }, []);
+
 
   const handleProductNameChange = event => {
     setProductName(event.target.value);
@@ -80,11 +106,10 @@ export default function ProductDialog() {
     console.log('value is:', event.target.value);
   };
 
-  const handleCategoryChange = event => {
-    setCategory(event.target.value);
 
-    console.log('value is:', event.target.value);
-  };
+  function handleCategoryChange(e){
+    setCategory(e.target.value);
+  }
 
   function postProduct(prodName,prodCategory,prodPrice,prodAvailableAmount) {
     var productId = randomString({
@@ -145,16 +170,14 @@ export default function ProductDialog() {
             fullWidth
             variant="standard"
           />
-            <TextField
-            autoFocus
-            margin="dense"
-            id="kategorija"
-            onChange={handleProductCategoryChange}
-            label="Kategorija"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
+          <label>Kategorija</label><br></br>
+          <select id = "dropdown" value={category} 
+        onChange={handleCategoryChange} >
+          {categories.map((category) => (
+          <option key={category.kategorijaId} value={category.kategorijaId} onClick={() =>handleCategoryChange(category.kategorijaId)}>{category.nazivKategorije}</option>
+        ))}
+</select>
+          
 
 <TextField
             autoFocus

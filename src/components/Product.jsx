@@ -23,6 +23,7 @@ function Products(){
    const [isAdmin,setIsAdmin]= useState();
    const [userEmail,setUserEmail]= useState("");
    const [orderCreated,setOrderCreated]= useState(false);
+   const [refreshData,setRefreshData]= useState(false);
 
    const indexOfLastProd=currentPage*productsPerPage;
    const indexOfFirstProd = indexOfLastProd-productsPerPage;
@@ -72,6 +73,25 @@ function Products(){
 
   },[]);
 
+  useEffect(()=>{
+    const getData = async ()=>{
+      const result = await axios.get(`http://localhost:4250/api/proizvod`, { headers: {'Authorization': `Bearer ${token}` }})
+      .catch(function (error) {
+        if (error.response && error.response.status === 403) {
+          AuthService.logout();
+          navigate("/login");
+          window.location.reload();
+        }
+      });
+      const data = await result.data;
+     
+      setProducts(data)
+    }
+    if(refreshData){
+       getData()
+    }
+    },[refreshData])
+
    
     const productsByCategory = async (category) => {
       setSelectedCategory(category);
@@ -104,7 +124,7 @@ function Products(){
         });
         const data = await result.data;
        
-      // console.log(data)
+       console.log(data)
         setProducts(data)
        
     };
@@ -424,6 +444,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
       onClose={handleClose}
       prodId = {product.proizvodId}
       ordId = {localStorage.getItem("orderId")}
+      handleParentFun={ () => setRefreshData(!refreshData)}
       />:null}
                    
                    

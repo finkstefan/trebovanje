@@ -10,11 +10,11 @@ import { useEffect, useState, useRef } from "react";
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
 
-export default function LocationDialog() {
+export default function LocationDialog(props) {
   const [open, setOpen] = React.useState(false);
-  const [country, setCountry] = React.useState('');
-  const [city, setCity] = React.useState('');
-  const [address, setAddress] = React.useState('');
+  const [country, setCountry] = React.useState();
+  const [city, setCity] = React.useState();
+  const [address, setAddress] = React.useState();
 
 
   var randomString = require("random-string");
@@ -93,7 +93,9 @@ fetch('http://localhost:4250/api/lokacija', requestOptions)
         window.location.reload();
       }
     });
+    
     setOpen(false)
+    props.handleParentFun()
   }
   return (
     <div>

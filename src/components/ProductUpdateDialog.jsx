@@ -10,6 +10,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import { useEffect, useState, useRef } from "react";
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios'
 
 export default function ProductUpdateDialog({idPr,nazivPr,kategorijaId,cenaPr,dostupanPr,dostupnaKolPr,adminIdPr}) {
   const [open, setOpen] = React.useState(false);
@@ -19,16 +20,40 @@ const [productPrice, setProductPrice] = React.useState(cenaPr);
 const [availableAmount, setAvailableAmount] = React.useState(dostupnaKolPr);
 const [productAvailable, setProductAvailable] = React.useState(dostupanPr);
 const [adminId, setAdminId] = React.useState(adminIdPr);
+const [categories, setCategories] = React.useState([]);
 
   var randomString = require("random-string");
 
   const navigate = useNavigate();
+
+  const token = JSON.parse(localStorage.getItem("token"));
 
  // const name = useRef();
   
   //const price = useRef();
   
  // const available = useRef();
+
+ useEffect(() => {
+       
+  const getCategories = async () => {
+    const result = await axios.get(`http://localhost:4250/api/kategorija`, { headers: {'Authorization': `Bearer ${token}` }}).catch(function (error) {
+        if (error.response && error.response.status === 403) {
+          AuthService.logout();
+          navigate("/login");
+          window.location.reload();
+        }
+      });
+    const data = await result.data;
+   
+    setCategories(data)
+   
+    
+};
+    getCategories();
+   
+   
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -58,17 +83,17 @@ const [adminId, setAdminId] = React.useState(adminIdPr);
     console.log('value is:', event.target.value);
   };
 
-  const handleCategoryChange = event => {
-    setCategory(event.target.value);
-
-    console.log('value is:', event.target.value);
-  };
+ 
 
   const handleAvailableAmountChange = event => {
     setAvailableAmount(event.target.value);
 
     console.log('value is:', event.target.value);
   };
+
+  function handleCategoryChange(e){
+    setCategory(e.target.value);
+  }
 
   function putProduct() {
     
@@ -117,17 +142,12 @@ console.log(pr)
             fullWidth
             variant="standard"
           />
-           <TextField
-            autoFocus
-            margin="dense"
-            id="cat"
-            value={category}
-            onChange={handleCategoryChange}
-            label="KategorijaId"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
+          <select id = "dropdown" value={category} 
+        onChange={handleCategoryChange} >
+          {categories.map((category) => (
+          <option key={category.kategorijaId} value={category.kategorijaId} onClick={() =>handleCategoryChange(category.kategorijaId)}>{category.nazivKategorije}</option>
+        ))}
+</select>
            <TextField
             autoFocus
             margin="dense"
