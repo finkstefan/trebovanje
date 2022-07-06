@@ -38,7 +38,7 @@ const Login = () => {
   const [openSnack, setOpenSnack] = React.useState(false);
   const navigate = useNavigate();
 
-  var passwordHash = require('password-hash');
+  var sha256 = require('js-sha256');
 
   const handleCloseSnack = () => {
     setOpenSnack(false);
@@ -48,9 +48,9 @@ const Login = () => {
     e.preventDefault();
     try {
 
-     // var hashedPassword = passwordHash.generate(password);
-
-      await AuthService.login(username,password).then(
+      var hashedPassword = sha256(password);
+console.log(hashedPassword)
+      await AuthService.login(username,hashedPassword).then(
         () => {
           navigate("/");
           window.location.reload();

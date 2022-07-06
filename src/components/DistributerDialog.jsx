@@ -26,6 +26,8 @@ export default function DistributerDialog() {
   const token = JSON.parse(localStorage.getItem("token"));
   const navigate = useNavigate();
 
+  var sha256 = require('js-sha256');
+
  // const name = useRef();
   
   //const price = useRef();
@@ -103,7 +105,7 @@ const postDistributer = async(username,email,password,phone,admin,dName,pib,loca
       });
   //  const item = { proizovdId: productId,kategorijaId:,kolicina:count };
 
-  const user = { korisnikId: userId,korisnickoIme:username,email:email,lozinka:password,brojTelefona:phone,admin:admin };
+  const user = { korisnikId: userId,korisnickoIme:username,email:email,lozinka:sha256(password),brojTelefona:phone,admin:admin };
 
   const requestOptions = {
     method: 'POST',
@@ -241,7 +243,7 @@ const postDistributer = async(username,email,password,phone,admin,dName,pib,loca
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Zatvori</Button>
-          <Button onClick={handleConfirm} disabled={!username || !email || !password || !phone || !admin || !dName || !pib || !locationId}>Dodaj</Button>
+          <Button onClick={handleConfirm} disabled={!username || !email || !password || !phone || !dName || !pib || !locationId}>Dodaj</Button>
         </DialogActions>
       </Dialog>
     </div>
