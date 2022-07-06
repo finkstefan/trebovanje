@@ -217,7 +217,7 @@ console.log(JSON.stringify(item));
           
           });
 
-localStorage.setItem("orderId",orId)
+//localStorage.setItem("orderId",orId)
 
         var todayDate = new Date().toISOString().slice(0, 10);
         const order = { porudzbinaId: orId,datum:todayDate,distributerEmail:localStorage.getItem('userEmail'),Isplacena:false };
@@ -231,7 +231,7 @@ localStorage.setItem("orderId",orId)
         console.log(JSON.stringify(order))
         
       fetch('http://localhost:4250/api/porudzbina', requestOptions)
-      .then(setOrderCreated(true)).catch(function (error) {
+      .then(response=>response.json()).then((json)=>{localStorage.setItem("orderId",json.porudzbinaId); setOrderCreated(true)}).catch(function (error) {
         if (error.response && error.response.status === 403) {
           AuthService.logout();
           navigate("/login");
@@ -387,7 +387,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
       
       { localStorage.token != null? <Button variant="outlined" onClick={() => logOut()}>Odjava</Button>:null}
     { orderCreated ? <Button variant="outlined" onClick={() => endOrder()}>Zavrsi porudzbinu</Button>:null}  
-      { !orderCreated && !isAdmin?<Button variant="outlined" onClick={() => createOrder()}>Napravi porudzbinu</Button>:null}
+      { !orderCreated && !isAdmin?<Button variant="outlined" onClick={() => createOrder()}>Napravi/nastavi porudzbinu</Button>:null}
        <h2>Proizvodi</h2>
         <TextField id="standard-basic" label="Naziv" variant="standard" onChange={(e) => setQ(e.target.value)}/><Button variant="outlined"  onClick={search}>Pretrazi</Button>
         <React.Fragment>
