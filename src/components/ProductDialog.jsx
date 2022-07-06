@@ -170,7 +170,7 @@ export default function ProductDialog() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Zatvori</Button>
-          <Button onClick={handleConfirm}>Dodaj</Button>
+          <Button onClick={handleConfirm} disabled={!productName || !category || !productPrice || !availableAmount}>Dodaj</Button>
         </DialogActions>
       </Dialog>
     </div>

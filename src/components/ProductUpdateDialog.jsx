@@ -154,7 +154,7 @@ console.log(pr)
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Zatvori</Button>
-          <Button onClick={handleConfirm}>Potvrdi</Button>
+          <Button onClick={handleConfirm} disabled={!productName || !category || !productPrice || !availableAmount}>Potvrdi</Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -71,7 +71,7 @@ export default function AddOrderItemDialog({prodId,ordId}) {
   //  const item = { proizovdId: productId,kategorijaId:,kolicina:count };
 
   const item = { stavkaPorudzbineId: itemId,proizvodId:prodId,porudzbinaId:ordId,kolicina:amount };
-
+console.log(item)
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${token}`  },

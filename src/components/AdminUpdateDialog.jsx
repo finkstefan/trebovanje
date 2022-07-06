@@ -17,7 +17,7 @@ export default function AdminUpdateDialog({uId,usern,em,passw,ph,adm,firstN,last
   const [email, setEmail] = React.useState(em);
   const [password, setPassword] = React.useState(passw);
   const [phone, setPhone] = React.useState(ph);
-  const [isAdmin, setAdmin] = React.useState(adm);
+  const [isAdmin, setAdmin] = React.useState(true);
   const [firstName, setFirstName] = React.useState(firstN);
   const [lastName, setLastName] = React.useState(lastN);
  

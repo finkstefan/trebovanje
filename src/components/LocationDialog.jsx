@@ -141,7 +141,7 @@ fetch('http://localhost:4250/api/lokacija', requestOptions)
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Zatvori</Button>
-          <Button onClick={handleConfirm}>Dodaj</Button>
+          <Button onClick={handleConfirm} disabled={!country || !city || !address}>Dodaj</Button>
         </DialogActions>
       </Dialog>
     </div>

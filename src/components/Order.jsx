@@ -204,9 +204,9 @@ if (error.response && error.response.status === 403) {
       id={order.porudzbinaId}
       />:null}
                        <Button onClick={() => getOrderItems(order.porudzbinaId)}>Prikazi stavke</Button>
-                  {order.isplacena? null:<StripeCheckout stripeKey="pk_test_51LEHoBFYog7W2g6eQwYMObxVNQEGmkFic6yIPG5mF0nVida85a1Rd24lumFnPJ3PqEm4BV0Y8CY8V7f6xTPmU5or00B8as1mhg" token={(token) => {     
+                  {!order.isplacena && !isAdmin ? <StripeCheckout stripeKey="pk_test_51LEHoBFYog7W2g6eQwYMObxVNQEGmkFic6yIPG5mF0nVida85a1Rd24lumFnPJ3PqEm4BV0Y8CY8V7f6xTPmU5or00B8as1mhg" token={(token) => {     
      handleToken(token, order.iznos, order.porudzbinaId);
-   }} amount={order.iznos * 100} /> }  
+   }} amount={order.iznos * 100} />:null }  
                 
                    </TableRow>
                ))}

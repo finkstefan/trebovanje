@@ -129,7 +129,7 @@ export default function LocationUpdateDialog({lokacijaId,drzava,grad,adresa}) {
             margin="dense"
             id="name"
             label="Adresa"
-            value={countryName}
+            value={address}
             type="text"
             onChange={handleAddressChange}
             fullWidth
@@ -140,7 +140,7 @@ export default function LocationUpdateDialog({lokacijaId,drzava,grad,adresa}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Zatvori</Button>
-          <Button onClick={handleConfirm}>Potvrdi</Button>
+          <Button onClick={handleConfirm} disabled={!country || !city || !address}>Potvrdi</Button>
         </DialogActions>
       </Dialog>
     </div>

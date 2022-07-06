@@ -204,17 +204,7 @@ fetch('http://localhost:4250/api/korisnik', requestOptions)
             variant="standard"
           />
   
-  <TextField
-            autoFocus
-            margin="dense"
-            id="admin"
-            value={admin}
-            label="Admin"
-            type="text"
-            onChange={handleAdminChange}
-            fullWidth
-            variant="standard"
-          />
+ 
 <TextField
             autoFocus
             margin="dense"
@@ -256,7 +246,7 @@ fetch('http://localhost:4250/api/korisnik', requestOptions)
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Zatvori</Button>
-          <Button onClick={handleConfirm}>Potvrdi</Button>
+          <Button onClick={handleConfirm} disabled={!username || !email || !password || !phone || !admin || !dName || !pib || !locationId}>Potvrdi</Button>
         </DialogActions>
       </Dialog>
     </div>

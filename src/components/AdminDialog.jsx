@@ -16,7 +16,7 @@ export default function AdminDialog() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [phone, setPhone] = React.useState('');
-  const [admin, setAdmin] = React.useState();
+  const [admin, setAdmin] = React.useState(true);
   
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -214,17 +214,7 @@ const admin = { korisnikId:userId, ime: firstName,prezime:lastName };
             variant="standard"
           />
   
-  <TextField
-            autoFocus
-            margin="dense"
-            id="admin"
-       
-            label="Admin"
-            type="text"
-            onChange={handleAdminChange}
-            fullWidth
-            variant="standard"
-          />
+ 
 <TextField
             autoFocus
             margin="dense"

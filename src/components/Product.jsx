@@ -366,7 +366,8 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
     return (<div>
       
       { localStorage.token != null? <Button variant="outlined" onClick={() => logOut()}>Odjava</Button>:null}
-    { orderCreated ? <Button variant="outlined" onClick={() => endOrder()}>Zavrsi porudzbinu</Button>:<Button variant="outlined" onClick={() => createOrder()}>Napravi porudzbinu</Button>}  
+    { orderCreated ? <Button variant="outlined" onClick={() => endOrder()}>Zavrsi porudzbinu</Button>:null}  
+      { !orderCreated && !isAdmin?<Button variant="outlined" onClick={() => createOrder()}>Napravi porudzbinu</Button>:null}
        <h2>Proizvodi</h2>
         <TextField id="standard-basic" label="Naziv" variant="standard" onChange={(e) => setQ(e.target.value)}/><Button variant="outlined"  onClick={search}>Pretrazi</Button>
         <React.Fragment>
@@ -415,7 +416,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
                {currentProds?.map((product)=>(
                    <TableRow key={product.proizvodId}>
                        <TableCell>{product.naziv}</TableCell>
-                       <TableCell>{product.nazivKategorije}</TableCell>
+                       <TableCell>{product.kategorija.nazivKategorije}</TableCell>
                        <TableCell>{product.cena}</TableCell>
                        <TableCell>{product.dostupan? 'Da' : 'Ne'}</TableCell>
                        <TableCell>{product.dostupnaKolicina}</TableCell>

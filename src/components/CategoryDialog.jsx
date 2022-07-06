@@ -93,7 +93,6 @@ fetch('http://localhost:4250/api/kategorija', requestOptions)
             autoFocus
             margin="dense"
             id="name"
-       
             label="Naziv kategorije"
             type="text"
             onChange={handleNameChange}
@@ -105,7 +104,7 @@ fetch('http://localhost:4250/api/kategorija', requestOptions)
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Zatvori</Button>
-          <Button onClick={handleConfirm}>Dodaj</Button>
+          <Button onClick={handleConfirm} disabled={!name}>Dodaj</Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -16,7 +16,7 @@ export default function DistributerDialog() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [phone, setPhone] = React.useState('');
-  const [admin, setAdmin] = React.useState();
+  const [admin, setAdmin] = React.useState(false);
   const [dName, setdName] = React.useState('');
   const [pib, setPib] = React.useState('');
   const [onBlackList, setOnBlackList] = React.useState();
@@ -199,17 +199,7 @@ const postDistributer = async(username,email,password,phone,admin,dName,pib,loca
             variant="standard"
           />
   
-  <TextField
-            autoFocus
-            margin="dense"
-            id="admin"
-       
-            label="Admin"
-            type="text"
-            onChange={handleAdminChange}
-            fullWidth
-            variant="standard"
-          />
+  
 <TextField
             autoFocus
             margin="dense"
@@ -251,7 +241,7 @@ const postDistributer = async(username,email,password,phone,admin,dName,pib,loca
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Zatvori</Button>
-          <Button onClick={handleConfirm}>Dodaj</Button>
+          <Button onClick={handleConfirm} disabled={!username || !email || !password || !phone || !admin || !dName || !pib || !locationId}>Dodaj</Button>
         </DialogActions>
       </Dialog>
     </div>
